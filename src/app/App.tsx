@@ -1,14 +1,22 @@
-import { useEffect, useReducer, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState, type ReactNode } from 'react';
 import WatchIcon from '../components/WatchIcon';
 import { apps } from '../data/apps';
 import { settingItems } from '../data/navigation';
 import { useClock } from '../hooks/useClock';
 import { useWatchGestures } from '../hooks/useWatchGestures';
-import { createInitialState, watchReducer, type Action, type Goal, type Sport, type WatchState } from './watchReducer';
+import { createInitialState, watchReducer, type Action, type Direction, type Goal, type Sport, type WatchState } from './watchReducer';
 import { demoReadings, type SettingsValues } from './watchState';
 import '../styles/global.css';
+import '../styles/watch-controls.css';
 
 type Send = React.Dispatch<Action>;
+
+const directionControls = [
+  { direction: 'up', label: 'Up', arrow: '↑', description: 'Notifications' },
+  { direction: 'down', label: 'Down', arrow: '↓', description: 'Quick settings' },
+  { direction: 'left', label: 'Left', arrow: '←', description: 'Activity and health' },
+  { direction: 'right', label: 'Right', arrow: '→', description: 'Daily feed' },
+] as const;
 
 function IconButton({ icon, color, label, onClick, className = '' }: { icon: string; color?: string; label: string; onClick: () => void; className?: string }) {
   return <button className={`icon-button ${className}`} title={label} aria-label={label} onClick={onClick}><WatchIcon name={icon} color={color} /></button>;
@@ -194,10 +202,21 @@ function Screen({ state, send, now }: { state: WatchState; send: Send; now: Date
 
 export default function App() {
   const [state, send] = useReducer(watchReducer, undefined, createInitialState);
+  const displayRef = useRef<HTMLDivElement>(null);
   const now = useClock();
   const gestures = useWatchGestures(direction => send({ type: 'SWIPE', direction }));
   useEffect(() => { localStorage.setItem('ft-a9508-settings', JSON.stringify(state.settings)); }, [state.settings]);
   const scrollable = ['drawer', 'feed', 'sleep', 'settings', 'setting-detail', 'goal-picker', 'more-sports', 'app'].includes(state.screen);
+  const move = useCallback((direction: Direction, repeat = false) => {
+    if (scrollable && (direction === 'up' || direction === 'down')) {
+      const content = displayRef.current?.querySelector<HTMLElement>('.scroll-content');
+      if (content) {
+        content.scrollBy({ top: content.clientHeight * (direction === 'up' ? 0.7 : -0.7), behavior: 'auto' });
+        return;
+      }
+    }
+    if (!repeat) send({ type: 'SWIPE', direction });
+  }, [scrollable]);
   useEffect(() => {
     const onArrowKey = (event: KeyboardEvent) => {
       const directions = { ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down' } as const;
@@ -206,22 +225,46 @@ export default function App() {
       const target = event.target;
       if (target instanceof HTMLElement && (target.isContentEditable || target.closest('input, textarea, select'))) return;
       event.preventDefault();
-      if (scrollable && (direction === 'up' || direction === 'down')) {
-        const content = document.querySelector<HTMLElement>('.display .scroll-content');
-        if (content) {
-          content.scrollBy({ top: content.clientHeight * (direction === 'up' ? 0.7 : -0.7), behavior: 'auto' });
-          return;
-        }
-      }
-      if (!event.repeat) send({ type: 'SWIPE', direction });
+      move(direction, event.repeat);
     };
     window.addEventListener('keydown', onArrowKey);
     return () => window.removeEventListener('keydown', onArrowKey);
-  }, [scrollable]);
-  return <main className="stage"><div className="watch" data-screen={state.screen}>
-    <div className="strap strap-top"><div className="strap-texture"/><div className="strap-logo">fastrack</div><div className="strap-lug"/></div>
-    <div className="strap strap-bottom"><div className="strap-lug"/><div className="strap-texture"/><div className="strap-holes"><i/><i/><i/><i/></div></div>
-    <div className="watch-case"><div className="case-rim"><div className="display" style={{ filter: `brightness(${Math.max(.55, state.settings.brightness / 100)})`, touchAction: scrollable ? 'pan-y' : 'none' }} {...gestures}><div key={state.screen} className="screen-transition"><Screen state={state} send={send} now={now}/></div></div></div></div>
-    <button className="side-button menu-button" aria-label="Physical MENU crown" onClick={() => send({ type: 'MENU' })}><span/></button><button className="side-button sports-button" aria-label="Physical SPORTS button" onClick={() => send({ type: 'SPORTS' })}/>
-  </div><div className="stage-caption"><strong>Smart Watch Simulation</strong></div></main>;
+  }, [move]);
+  return <main className="stage">
+    <div className="watch-preview">
+      <div className="watch" data-screen={state.screen}>
+        <div className="strap strap-top"><div className="strap-texture"/><div className="strap-logo">fastrack</div><div className="strap-lug"/></div>
+        <div className="strap strap-bottom"><div className="strap-lug"/><div className="strap-texture"/><div className="strap-holes"><i/><i/><i/><i/></div></div>
+        <div className="watch-case"><div className="case-rim"><div ref={displayRef} className="display" style={{ filter: `brightness(${Math.max(.55, state.settings.brightness / 100)})`, touchAction: scrollable ? 'pan-y' : 'none' }} {...gestures}><div key={state.screen} className="screen-transition"><Screen state={state} send={send} now={now}/></div></div></div></div>
+        <button className="side-button menu-button" aria-label="Physical MENU crown" onClick={() => send({ type: 'MENU' })}><span/></button>
+        <button className="side-button sports-button" aria-label="Physical SPORTS button" onClick={() => send({ type: 'SPORTS' })}/>
+      </div>
+    </div>
+    <section className="watch-controls" aria-labelledby="watch-controls-title">
+      <h1 id="watch-controls-title">Smart Watch Simulation</h1>
+      <p>Press MENU to wake the watch. The side buttons on the watch also work.</p>
+      <div className="watch-controls-grid">
+        <button type="button" onClick={() => send({ type: 'MENU' })}>
+          <strong>MENU</strong>
+          <span>Wake, open apps, or go back</span>
+        </button>
+        <button type="button" onClick={() => send({ type: 'SPORTS' })}>
+          <strong>SPORTS</strong>
+          <span>Open Recent Multisport</span>
+        </button>
+      </div>
+
+      <h2>From the watch face</h2>
+      <p>Swipe or drag on the watch, use your arrow keys, or press a direction below.</p>
+      <div className="watch-controls-grid">
+        {directionControls.map(({ direction, label, arrow, description }) => (
+          <button type="button" key={direction} onClick={() => move(direction)}>
+            <strong><span className="watch-control-arrow" aria-hidden="true">{arrow}</span> {label}</strong>
+            <span>{description}</span>
+          </button>
+        ))}
+      </div>
+      <p className="watch-controls-scroll">In lists, scroll with the mouse wheel or swipe vertically.</p>
+    </section>
+  </main>;
 }
