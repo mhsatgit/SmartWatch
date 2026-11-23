@@ -9,7 +9,7 @@ Fastrack FT_A9508 watch replica.
 [![Vite 6.4.3](https://img.shields.io/badge/Vite-6.4.3-646CFF?logo=vite&logoColor=white&style=flat-square)](https://vite.dev/)
 [![Frontend only](https://img.shields.io/badge/Frontend-only-222222?style=flat-square)](#scope-and-simulation)
 
-**[Open the live demo](https://mhsatgit.github.io/SmartWatch/)**
+### **[SmartWatchReplicaDemo](https://mhsatgit.github.io/SmartWatch/)**
 
 ## At a glance
 
