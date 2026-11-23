@@ -31,6 +31,7 @@ export type WatchState = {
 
 export type Action =
   | { type: 'MENU' } | { type: 'SPORTS' } | { type: 'BACK' }
+  | { type: 'AOD_TIMEOUT' }
   | { type: 'SWIPE'; direction: Direction }
   | { type: 'OPEN'; screen: ScreenId }
   | { type: 'OPEN_APP'; appId: AppId }
@@ -69,6 +70,9 @@ const sequence: ScreenId[] = ['face', 'activity', 'multisport', 'heart-rate', 's
 
 export function watchReducer(state: WatchState, action: Action): WatchState {
   switch (action.type) {
+    case 'AOD_TIMEOUT':
+      if (state.screen !== 'face') return state;
+      return { ...state, screen: 'aod', history: [] };
     case 'MENU':
       if (state.screen === 'aod') return { ...state, screen: 'face', history: [] };
       if (state.screen === 'face') return { ...state, screen: 'drawer', history: ['face'] };

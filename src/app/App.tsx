@@ -206,6 +206,11 @@ export default function App() {
   const now = useClock();
   const gestures = useWatchGestures(direction => send({ type: 'SWIPE', direction }));
   useEffect(() => { localStorage.setItem('ft-a9508-settings', JSON.stringify(state.settings)); }, [state.settings]);
+  useEffect(() => {
+    if (state.screen !== 'face') return;
+    const timeout = window.setTimeout(() => send({ type: 'AOD_TIMEOUT' }), 8000);
+    return () => window.clearTimeout(timeout);
+  }, [state.screen]);
   const scrollable = ['drawer', 'feed', 'sleep', 'settings', 'setting-detail', 'goal-picker', 'more-sports', 'app'].includes(state.screen);
   const move = useCallback((direction: Direction, repeat = false) => {
     if (scrollable && (direction === 'up' || direction === 'down')) {
