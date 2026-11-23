@@ -1,76 +1,71 @@
-
 # Smart Watch Simulation
 
 **A reference-based, interactive smartwatch demo for the browser.**
 
-**Fastrack FT_A9508 Watch Replica.**
+Fastrack FT_A9508 watch replica.
 
-[![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
-[![Frontend only](https://img.shields.io/badge/Frontend-only-222222)](#scope-and-simulation)
+[![React 19.3.0](https://img.shields.io/badge/React-19.3.0-149ECA?logo=react&logoColor=white&style=flat-square)](https://react.dev/)
+[![TypeScript 5.9.3](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript&logoColor=white&style=flat-square)](https://www.typescriptlang.org/)
+[![Vite 6.4.3](https://img.shields.io/badge/Vite-6.4.3-646CFF?logo=vite&logoColor=white&style=flat-square)](https://vite.dev/)
+[![Frontend only](https://img.shields.io/badge/Frontend-only-222222?style=flat-square)](#scope-and-simulation)
 
-
-
-
-> An unofficial visual replica inspired by the Fastrack FT_A9508 (firmware v6.7.16) reference photos and videos. It does not connect to a real watch or provide real health measurements.
+**[Open the live demo](https://mhsatgit.github.io/SmartWatch/)**
 
 ## At a glance
 
-| | |
-| --- | --- |
-| **Built with** | React, TypeScript, Vite, CSS, SVG |
-| **Starting screen** | Analog always-on display (AOD) |
-| **Interaction** | Pointer and touch gestures, mouse wheel, keyboard arrows |
-| **Data** | Local demo state; settings persist in browser storage |
+|                     |                                                                      |
+| ------------------- | -------------------------------------------------------------------- |
+| **Built with**      | React, TypeScript, Vite, CSS, and SVG                                |
+| **Starting screen** | Analog always-on display (AOD)                                       |
+| **Controls**        | Dashboard buttons, watch side buttons, arrow keys, and swipes        |
+| **Data**            | Simulated readings and workouts, with settings saved in your browser |
 
 ## Explore the watch
 
-- Wake the AOD with the side MENU button to reveal the green X face.
-- Swipe left from the face through **Activity → Recent Multisport → Heart Rate → Sleep → SpO₂ → Stress**.
-- Swipe right from the face to open the **Good Evening** feed.
-- Swipe down for two quick-settings pages; swipe up for notifications.
-- Open the app drawer from the face and browse the 21 icons documented in the video references.
-- Use Recent Multisport to explore workout setup, goal selection, and the simulated workout session.
+- Press **MENU** to wake the analog display and reveal the green X watch face. Press it again to open the 21-app drawer.
+- Move **Left** from the watch face to browse Activity, Recent Multisport, Heart Rate, Sleep, SpO₂, and Stress.
+- Press **SPORTS** to choose a sport, set a goal, and try a simulated workout.
 
 ### Controls
 
-| Input | Action |
-| --- | --- |
-| Click or tap the side MENU button | Wake the AOD, open the app drawer from the face, or go back from a subpage |
-| Click or tap the side SPORTS button | Open Recent Multisport |
-| Drag or swipe left/right | Move through adjacent pages |
-| Drag or swipe down/up from the watch face | Open quick settings / notifications |
-| Arrow keys | Perform the matching swipe direction |
-| Up/Down arrows on scrollable screens | Scroll the current list or feed |
-| Mouse wheel or vertical drag | Scroll content |
-| Tap an icon or control | Open or operate that feature |
+| Input                                        | Action                                                                      |
+| -------------------------------------------- | --------------------------------------------------------------------------- |
+| **MENU**                                     | Wake the watch, open the app drawer from the watch face, or go back.        |
+| **SPORTS**                                   | Open Recent Multisport.                                                     |
+| **↑ Up**                                     | Open notifications from the watch face.                                     |
+| **↓ Down**                                   | Open quick settings from the watch face. Move right to see the second page. |
+| **← Left**                                   | Browse activity and health screens from the watch face.                     |
+| **→ Right**                                  | Open the daily feed from the watch face.                                    |
+| **Mouse wheel, vertical drag or swipe, ↑/↓** | Scroll a list or the daily feed.                                            |
+
+Use the on-screen buttons, arrow keys, or drag or swipe in the matching direction. Hover over, focus, or tap a dashboard button to read its description.
 
 ## Run locally
 
 ### Requirements
 
-[![Node.js](https://img.shields.io/badge/Node.js-≥20-339933?logo=nodedotjs&logoColor=white&style=for-the-badge)](https://nodejs.org/)
+[![Node.js 24](https://img.shields.io/badge/Node.js-24-339933?logo=nodedotjs&logoColor=white&style=flat-square)](https://nodejs.org/)
+[![npm 11](https://img.shields.io/badge/npm-11-CB3837?logo=npm&logoColor=white&style=flat-square)](https://www.npmjs.com/)
 
-[![npm](https://img.shields.io/badge/npm-latest-CB3837?logo=npm&logoColor=white&style=for-the-badge)](https://www.npmjs.com/)
+Use Node.js 24 to match GitHub Actions. Node.js includes npm, and the local setup was verified with npm 11.
 
 ### Clone
+
 ```sh
 git clone https://github.com/mhsatgit/SmartWatch.git
 cd SmartWatch
 ```
 
 ### Install and start
-**Windows Command Prompt**
-Run these commands from the project root:
+
+From the project root, install the locked dependencies and start Vite.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open the local address printed by Vite, usually `http://127.0.0.1:5173/`. Keep the terminal open while the development server is running; press `Ctrl+C` to stop it.
-
+Open the address printed by Vite, usually `http://127.0.0.1:5173/`. Keep the terminal open while using the app and press `Ctrl+C` to stop it. If PowerShell blocks `npm.ps1`, use `npm.cmd` in place of `npm`.
 
 ### Production build
 
@@ -79,21 +74,22 @@ npm run build
 npm run preview
 ```
 
-The production bundle is written to `dist/`. The preview command serves that bundle locally.
+The build runs the TypeScript checks and writes the static site to `dist/`. Open the address printed by the preview command, usually `http://127.0.0.1:4173/`.
 
 ## Project map
 
 ```text
 src/
-├── app/          Screen IDs, navigation reducer, and shared watch state
-├── components/   Watch icons and reusable interface pieces
-├── data/         App catalog and navigation definitions
-├── hooks/        Clock and pointer gesture handling
-└── styles/       Watch shell and screen styling
+├── app/                   App, navigation, watch state, and timer logic
+├── components/            Dashboard controls and shared watch icons
+│   └── screens/           Watch displays grouped by feature
+├── data/                  App catalog and navigation definitions
+├── hooks/                 Clock updates and pointer gestures
+└── styles/                Watch shell, screen, and dashboard styles
 
-public/references/
-├── raw/          Extracted source photos and videos
-└── processed/   Selected frames and contact sheets
-
-docs/             Screen inventory, navigation map, manifest, visual notes
+.github/workflows/deploy.yml  Builds and publishes to GitHub Pages on pushes to main
 ```
+
+## Scope and simulation
+
+This unofficial replica is based on reference photos and videos of the Fastrack FT_A9508 with firmware v6.7.16. It runs entirely in the browser, with sample data for the health screens and simulated workout sessions.
