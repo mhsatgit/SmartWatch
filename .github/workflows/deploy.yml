@@ -11,35 +11,42 @@ permissions:
   id-token: write
 
 concurrency:
-  group: github-pages
-  cancel-in-progress: false
+  group: pages
+  cancel-in-progress: true
 
 jobs:
-  publish:
+  deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment:
       name: github-pages
-      url: ${{ steps.publish.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
 
-      - uses: actions/setup-node@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
         with:
           node-version: '24'
+          cache: npm
 
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build SmartWatch for Pages
-        run: npm run build -- --base=/SmartWatch/
+        run: npm run build -- --base="/${{ github.event.repository.name }}/"
 
-      - uses: actions/configure-pages@v6
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v6
 
-      - uses: actions/upload-pages-artifact@v5
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v5
         with:
-          path: dist
+          path: ./dist
 
-      - name: Publish SmartWatch
-        id: publish
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v5
