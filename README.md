@@ -9,7 +9,7 @@ Fastrack FT_A9508 watch replica.
 [![Vite 6.4.3](https://img.shields.io/badge/Vite-6.4.3-646CFF?logo=vite&logoColor=white&style=flat-square)](https://vite.dev/)
 [![Frontend only](https://img.shields.io/badge/Frontend-only-222222?style=flat-square)](#scope-and-simulation)
 
-### **[SmartWatchReplicaDemo](https://mhsatgit.github.io/SmartWatch/)**
+### **[SmartWatchReplicaDemo](https://mhsatgit.github.io/smartwatch/)**
 
 ## At a glance
 
@@ -52,8 +52,8 @@ Use Node.js 24 to match GitHub Actions. Node.js includes npm, and the local setu
 ### Clone
 
 ```sh
-git clone https://github.com/mhsatgit/SmartWatch.git
-cd SmartWatch
+git clone https://github.com/mhsatgit/smartwatch.git
+cd smartwatch
 ```
 
 ### Install and start
